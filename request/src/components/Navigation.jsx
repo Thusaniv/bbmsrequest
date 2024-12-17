@@ -1,9 +1,9 @@
 import React from 'react'
-import { FaUserCircle, FaCog, FaUser, FaSignOutAlt, FaTint } from 'react-icons/fa';
-//import { supabase } from '../lib/supabase';
+import { FaSearch, FaUserCircle, FaCog, FaUser, FaSignOutAlt, FaTint } from 'react-icons/fa';
+import { supabase } from '../lib/supabase';
 
 export default function Navigation() {
-  /*const Logout = async () => {
+  const Logout = async () => {
     const { error } = await supabase.auth.signOut()
     if (error) {
       console.log('Error signing out:', error.message)
@@ -11,7 +11,7 @@ export default function Navigation() {
       console.log('User signed out successfully')
      
     }
-  }*/
+  }
 
   return (
     <div className='flex justify-between w-full px-4 py-1' style={{ backgroundColor: '#b22222' }}>
@@ -33,8 +33,22 @@ export default function Navigation() {
             <FaUserCircle className='w-10 h-10 mt-1' />
             <div className='absolute right-0 z-10 hidden w-40 bg-white rounded-lg shadow group-focus:block top-full'>
               <ul className='px-3 py-2 text-base font-bold text-gray-600'>
+                
+                {/* <li className='flex items-center mb-3'>
+                  <FaUser className='mr-2' />
+                  <a href=''>Profile</a>
+                </li>
+                
+                <hr className='bg-gray-600' />
+
+                
+                <li className='flex items-center mt-2 mb-3'>
+                  <FaCog className='mr-2' />
+                  <a href=''>Settings</a>
+                </li>
+                <hr className='bg-gray-600' />*/}
                
-                <li  onClick={""} className='flex items-center mt-1 mb-3'>
+                <li  onClick={Logout} className='flex items-center mt-1 mb-3'>
                   <FaSignOutAlt  className='mr-2' />
                    Logout
                 </li>

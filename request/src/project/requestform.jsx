@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';  // Assuming you have already configured Supabase
 
 export default function Requestform() {
   const navigate = useNavigate();
@@ -17,22 +18,39 @@ export default function Requestform() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form Data Submitted:', formData);
 
-    // Reset the form
-    setFormData({
-      date: '',
-      donation_date: '',
-      blood_type: '',
-      quantity: '',
-      hospital_name: '',
-      ward_no: '',
-    });
+    // Insert the data into the requests table
+    const { data, error } = await supabase
+      .from('requests')
+      .insert([
+        {
+          blood_type: formData.blood_type,
+          quantity: formData.quantity,
+          status: 'pending', // Set the status as "Pending"
+          hospital_name: formData.hospital_name,
+          ward_no: formData.ward_no,
+          request_date: formData.date,  // Assuming 'date' is the request date
+        },
+      ]);
 
-    alert('Blood test submitted successfully!');
-    navigate('/Bloodtest');
+    if (error) {
+      console.error('Error inserting data:', error);
+      alert('Error submitting the request!');
+    } else {
+      console.log('Request submitted:', data);
+      alert('Blood request submitted successfully!');
+      setFormData({
+        date: '',
+        donation_date: '',
+        blood_type: '',
+        quantity: '',
+        hospital_name: '',
+        ward_no: '',
+      });
+      navigate('/'); // Navigate to the Bloodtest page or desired route
+    }
   };
 
   return (
@@ -76,30 +94,31 @@ export default function Requestform() {
         </div>
 
         <div>
-          <label className="h-6 mt-1 text-xs font-bold leading-8 text-gray-600 uppercase">Hospital_Name</label>
+          <label className="h-6 mt-1 text-xs font-bold leading-8 text-gray-600 uppercase">Hospital Name</label>
           <input
             type="text"
             name="hospital_name"
             value={formData.hospital_name}
             onChange={handleChange}
-            placeholder="Enter Hospital_Name"
+            placeholder="Enter Hospital Name"
             className="w-full px-3 py-1 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-300"
             required
           />
         </div>
 
         <div>
-          <label className="h-6 mt-1 text-xs font-bold leading-8 text-gray-600 uppercase">Ward_No</label>
+          <label className="h-6 mt-1 text-xs font-bold leading-8 text-gray-600 uppercase">Ward No</label>
           <input
             type="text"
             name="ward_no"
             value={formData.ward_no}
             onChange={handleChange}
-            placeholder="Enter Ward_No"
+            placeholder="Enter Ward No"
             className="w-full px-3 py-1 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-300"
             required
           />
         </div>
+        
         <div>
           <label className="h-6 mt-1 text-xs font-bold leading-8 text-gray-600 uppercase">Quantity</label>
           <input
@@ -125,7 +144,7 @@ export default function Requestform() {
             type="submit"
             className="px-4 py-1 text-white bg-red-500 rounded-lg hover:bg-red-600"
           >
-            Add Test
+            Add Request
           </button>
         </div>
       </form>
